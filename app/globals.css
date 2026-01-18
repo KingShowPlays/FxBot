@@ -128,3 +128,34 @@
     scroll-behavior: smooth;
   }
 }
+/* Hero carousel animations */
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.hero-slide-enter {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+.hero-slide-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 1000ms ease-in-out, transform 1000ms ease-in-out;
+}
+
+.hero-slide-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.hero-slide-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 1000ms ease-in-out, transform 1000ms ease-in-out;
+}

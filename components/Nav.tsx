@@ -17,11 +17,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const navLinks = [
-  { name: 'Home', href: '#home' },
-  { name: 'Docs', href: '#docs' },
-  { name: 'About', href: '#about' },
-  { name: 'Blog', href: '#blog' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Home', href: '/', isHome: true },
+  { name: 'About', href: '/about' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Community', href: '/community' },
+  { name: 'Contact', href: '/contact' },
 ];
 
 function Nav() {
@@ -62,6 +62,14 @@ function Nav() {
     setRememberMe(false);
   };
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
       <div className="flex justify-center">
@@ -78,7 +86,7 @@ function Nav() {
           
           <div className="relative flex items-center justify-between">
             {/* Logo Section */}
-            <Link href="/" className="flex items-center gap-3 group">
+            <button onClick={handleHomeClick} className="flex items-center gap-3 group">
               <div className="relative transition-transform duration-300 group-hover:scale-105">
                 <Image
                   src="/icon-black.png"
@@ -89,19 +97,30 @@ function Nav() {
                   priority
                 />
               </div>
-            </Link>
+            </button>
 
             {/* Desktop Navigation Links */}
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name}
-                  href={link.href}
-                  className="relative px-5 py-2.5 text-sm font-medium text-white/90 hover:text-white rounded-full transition-all duration-300 group overflow-hidden"
-                >
-                  <span className="relative z-10">{link.name}</span>
-                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 rounded-full transition-all duration-300 scale-90 group-hover:scale-100"></div>
-                </Link>
+                link.isHome ? (
+                  <button
+                    key={link.name}
+                    onClick={handleHomeClick}
+                    className="relative px-5 py-2.5 text-sm font-medium text-white/90 hover:text-white rounded-full transition-all duration-300 group overflow-hidden"
+                  >
+                    <span className="relative z-10">{link.name}</span>
+                    <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 rounded-full transition-all duration-300 scale-90 group-hover:scale-100"></div>
+                  </button>
+                ) : (
+                  <Link 
+                    key={link.name}
+                    href={link.href}
+                    className="relative px-5 py-2.5 text-sm font-medium text-white/90 hover:text-white rounded-full transition-all duration-300 group overflow-hidden"
+                  >
+                    <span className="relative z-10">{link.name}</span>
+                    <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 rounded-full transition-all duration-300 scale-90 group-hover:scale-100"></div>
+                  </Link>
+                )
               ))}
             </div>
 
@@ -206,15 +225,29 @@ function Nav() {
         <div className="w-full max-w-4xl mt-3 p-6 rounded-3xl backdrop-blur-xl bg-slate-900/95 border border-white/10 shadow-2xl">
           <div className="flex flex-col gap-2">
             {navLinks.map((link, index) => (
-              <Link 
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="px-5 py-3.5 text-base font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-center"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {link.name}
-              </Link>
+              link.isHome ? (
+                <button
+                  key={link.name}
+                  onClick={(e) => {
+                    handleHomeClick(e);
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-5 py-3.5 text-base font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-center"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  {link.name}
+                </button>
+              ) : (
+                <Link 
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="px-5 py-3.5 text-base font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-center"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  {link.name}
+                </Link>
+              )
             ))}
             
             {/* Mobile Login */}
