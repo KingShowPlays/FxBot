@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 function Footer() {
   const quickLinks = [
@@ -96,9 +97,14 @@ function Footer() {
 
         {/* Logo Section */}
         <div className="flex justify-center mb-16">
-          <h2 className="text-7xl md:text-8xl lg:text-9xl font-bold text-gray-800 tracking-tight">
-            Avulex Technology
-          </h2>
+          <Image
+            src="/Avulex-white-01.svg"
+            alt="Avulex Technology"
+            width={1600}
+            height={400}
+            className="w-auto h-48 md:h-64 lg:h-80 max-w-full"
+            priority
+          />
         </div>
 
         {/* Bottom Section */}

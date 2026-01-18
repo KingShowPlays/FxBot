@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const slides = [
     {
@@ -24,29 +25,65 @@ function Hero() {
     }
   ];
 
-  const nextSlide = () => {
+  // Auto-advance function
+  const nextSlideAuto = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
+
+  // Auto-play effect
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      nextSlideAuto();
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, nextSlideAuto]);
+
+  const nextSlide = () => {
+    setIsAutoPlaying(false); // Pause auto-play when user interacts
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    // Resume auto-play after 15 seconds of inactivity
+    setTimeout(() => setIsAutoPlaying(true), 15000);
   };
 
   const prevSlide = () => {
+    setIsAutoPlaying(false); // Pause auto-play when user interacts
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    // Resume auto-play after 15 seconds of inactivity
+    setTimeout(() => setIsAutoPlaying(true), 15000);
+  };
+
+  const goToSlide = (index: number) => {
+    setIsAutoPlaying(false); // Pause auto-play when user interacts
+    setCurrentSlide(index);
+    // Resume auto-play after 15 seconds of inactivity
+    setTimeout(() => setIsAutoPlaying(true), 15000);
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div 
+      className="relative w-full h-screen overflow-hidden"
+      onMouseEnter={() => setIsAutoPlaying(false)}
+      onMouseLeave={() => setIsAutoPlaying(true)}
+    >
       {/* Carousel Slides */}
       <div className="relative w-full h-full">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
             }`}
           >
             {/* Background Image */}
             <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-in-out"
+              style={{ 
+                backgroundImage: `url(${slide.image})`,
+                transform: index === currentSlide ? 'scale(1)' : 'scale(1.1)'
+              }}
             >
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/30"></div>
@@ -91,14 +128,24 @@ function Hero() {
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
+            onClick={() => goToSlide(index)}
+            className={`h-2 rounded-full transition-all duration-300 ${
               index === currentSlide 
                 ? 'bg-white w-8' 
-                : 'bg-white/50 hover:bg-white/75'
+                : 'bg-white/50 hover:bg-white/75 w-2'
             }`}
             aria-label={`Go to slide ${index + 1}`}
-          />
+          >
+            {/* Progress bar for current slide */}
+            {index === currentSlide && isAutoPlaying && (
+              <div 
+                className="h-full bg-white/80 rounded-full animate-pulse"
+                style={{
+                  animation: 'progress 10s linear infinite'
+                }}
+              />
+            )}
+          </button>
         ))}
       </div>
     </div>
