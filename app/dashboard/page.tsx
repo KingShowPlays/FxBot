@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [tpPoints, setTpPoints] = useState(300);
   const [expirySec, setExpirySec] = useState(60);
   const [status, setStatus] = useState("");
-
+  //wow
   async function send(action: Action) {
     setStatus("Sending...");
 
